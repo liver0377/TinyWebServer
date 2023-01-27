@@ -14,6 +14,10 @@ Log::Log()
 
 Log::~Log()
 {
+    if (m_buf != NULL) {
+        delete [] m_buf;
+    }
+
     if (m_fp != NULL)
     {
         fclose(m_fp);
