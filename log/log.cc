@@ -22,6 +22,10 @@ Log::~Log()
     {
         fclose(m_fp);
     }
+
+    if (m_log_queue != NULL) {
+        delete m_log_queue;
+    }
 }
 //异步需要设置阻塞队列的长度，同步不需要设置
 bool Log::init(const char *file_name, int close_log, int log_buf_size, int split_lines, int max_queue_size)
@@ -34,6 +38,7 @@ bool Log::init(const char *file_name, int close_log, int log_buf_size, int split
         pthread_t tid;
         //flush_log_thread为回调函数,这里表示创建线程异步写日志
         pthread_create(&tid, NULL, flush_log_thread, NULL);
+        pthread_detach(tid);
     }
     
     m_close_log = close_log;
@@ -145,6 +150,9 @@ void Log::write_log(int level, const char *format, ...)
 
     m_mutex.unlock();
 
+    // 指定为异步日志系统时, 调用write_log()的线程只需要将日志字符串插入到阻塞队列即可
+    // 指定为同步日志系统时, 调用write_log()的线程需要自己手动调用fputs()将日志字符串写入日志文件
+    // 这里稍微做了一些改动, 如果阻塞队列为空, 主线程同样会自己手动将日志字符串写入日志文件
     if (m_is_async && !m_log_queue->full())
     {
         m_log_queue->push(log_str);

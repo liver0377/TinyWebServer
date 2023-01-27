@@ -6,7 +6,7 @@
 #include <string>
 #include <stdarg.h>
 #include <pthread.h>
-#include "block_queue.h"
+#include "log/block_queue.h"
 
 using namespace std;
 
