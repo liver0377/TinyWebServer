@@ -1,10 +1,21 @@
-#include "config/config.h"
+#include <fstream>
+#include <string>
 
+#include "config/config.h"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 int main(int argc, char *argv[]) {
   // 需要修改的数据库信息,登录名,密码,库名
-  string user = "root";
-  string passwd = "Sq17273747@";
-  string databasename = "server_db";
+  std::ifstream input("config/dbconfig.json");
+  json data = json::parse(input);
+  if (!data.is_object()) {
+    throw std::runtime_error("config file error");
+  }
+
+  string user = data["user"];
+  string passwd = data["passwd"];
+  string databasename = data["dbname"];
 
   // 命令行解析
   Config config;

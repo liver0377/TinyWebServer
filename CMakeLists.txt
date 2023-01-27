@@ -25,11 +25,14 @@ add_subdirectory(webserver)
 # add_subdirectory(test)
 add_subdirectory(threadpool)
 add_subdirectory(timer)
+add_subdirectory(third_party/json)
 # add_subdirectory(utils)
 # add_subdirectory(third_party/googletest)
 
 # websrv构建时的include路径为项目根目录
-target_include_directories(websrv PUBLIC ${PROJECT_SOURCE_DIR})
+target_include_directories(websrv 
+                           PUBLIC ${PROJECT_SOURCE_DIR}
+                           PUBLIC ${PROJECT_SOURCE_DIR}/third_party/json/include)
 
 target_link_libraries(
   websrv
