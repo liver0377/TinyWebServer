@@ -1,3 +1,4 @@
 build/
 *ServerLog
 websrv
+.vscode
